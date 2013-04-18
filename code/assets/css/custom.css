@@ -6,6 +6,13 @@ body {
    padding-top: 15px;
 }
 
+a {
+   color: #FFFFFF;
+}
+
+a:hover{
+  color: #FFFFFF;
+}
 
 .form-signin {
         width: 400px;

@@ -6,8 +6,8 @@
 		private $goal;
 		private $motivation;
     private $problemId='';
-    private $activeStatus;
-    private $controlStatus;
+    private $activeStatus='1';
+    private $controlStatus='0';
 
 		function __construct() {
 		   parent::__construct();  	
