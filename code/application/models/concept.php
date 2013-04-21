@@ -153,7 +153,7 @@
    		}
    		
    		public function fetchProblems($term,$convertToObject=true) {
-      		$this->db->select()->like('term',$term)->where('sct2_description.typeId like "%1"');
+      		$this->db->select()->like('term',$term)->where('sct2_description.typeId like "%1"')->where('active',1);
    			$query = $this->db->get('sct2_description',10,0);
    			$result = $query->result();
    			if($convertToObject){

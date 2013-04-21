@@ -6,13 +6,7 @@ body {
    padding-top: 15px;
 }
 
-a {
-   color: #FFFFFF;
-}
 
-a:hover{
-  color: #FFFFFF;
-}
 
 .form-signin {
         width: 400px;
@@ -72,6 +66,14 @@ a:hover{
   width: 500px;
   margin-bottom: 5px;
   position: relative;
+}
+
+.red a,.red a:hover{
+  color: #fff;
+}
+
+.green a,.green a:hover{
+  color: #fff;
 }
 
 .clearFloat {
