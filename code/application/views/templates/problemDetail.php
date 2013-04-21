@@ -1,3 +1,11 @@
+<?php if($permissionObject->checkUserPermission($personRole,'add_goal')): ?>
+	<a href="<?php echo base_url("goal/create/".$problemDetails->getProblemId());?>" >Add Goal</a>
+<?php endif; ?>
+<?php if($permissionObject->checkUserPermission($personRole,'add_medication')): ?>
+	<a href="<?php echo base_url("medication/add/".$problemDetails->getPersonObject()->getPersonId()."/".$problemDetails->getProblemId());?>" >Add Medication</a>
+<?php endif; ?>
+<div class="clearFloat"></div>
+<br>
 <a href="<?php echo base_url('patient/index/'.$problemDetails->getPersonObject()->getPersonId()); ?>"  ><img width="50" height="50" src="<?= $problemDetails->getPersonObject()->getAvatarFilename();?>" /></a>
 <div><span >Given Name:</span><?php echo $problemDetails->getPersonObject()->getGivenName();?></div>
 
@@ -8,9 +16,10 @@
 <div><span>controlStatus:</span><?php echo $problemDetails->getControlStatus();?></div>
 <div><span>activeStatus:</span><?php echo $problemDetails->getActiveStatus();?></div>
 
-<div><span>notes:</span><?php echo $problemDetails->getNotes();?></div>
+
 <div><span>Start Date:</span><?php echo $problemDetails->getStartDate();?></div>
 <div><span>End Date:</span><?php echo $problemDetails->getEndDate();?></div>
+<div><span>notes:</span><?php echo $problemDetails->getNotes();?></div>
 <br><br><br>
 
 
@@ -34,9 +43,6 @@ foreach ($problemGoals as $key=>$value): ?>
 }
 ?> 
 <br>
-<?php if($permissionObject->checkUserPermission($personRole,'add_goal')): ?>
-	<a href="<?php echo base_url("goal/create/".$problemDetails->getProblemId());?>" >Add Goal</a>
-<?php endif; ?>
 <br><br><br>
 <div class="medications">
 	<span>Medications</span>
@@ -85,6 +91,3 @@ foreach ($problemGoals as $key=>$value): ?>
 </div>
 
 <br><br><br>
-<?php if($permissionObject->checkUserPermission($personRole,'add_medication')): ?>
-	<a href="<?php echo base_url("medication/add/".$problemDetails->getPersonObject()->getPersonId()."/".$problemDetails->getProblemId());?>" >Add Medication</a>
-<?php endif; ?>
