@@ -15,6 +15,7 @@
 		private $controlStatus='0';
 		private $guidelineId='0';
 		private $notes='';
+		private $lastUpdatedBy='-1';
 		private $isApproved = '0';
 		private $conceptObject = '';
 		private $personObject = '';
@@ -306,7 +307,23 @@
 		    $this->isApproved = $isApproved;
 		    return $this;
 		}
+		/**
+		 * Getter for lastUpdatedBy
+		 * @return mixed
+		 */
+		public function getLastUpdatedBy(){
+			return $this->lastUpdatedBy;
+		}
 		
+		/**
+		 * Setter for lastUpdatedBy
+		 * @param mixed $lastUpdatedBy Value to set
+		 * @return self
+		 */
+		public function setLastUpdatedBy($lastUpdatedBy){
+			$this->lastUpdatedBy = $lastUpdatedBy;
+		    return $this;
+		}
 
 		public function convertFormDataToObject($inputList){
 			foreach ($inputList as $key => $value) {
@@ -369,7 +386,16 @@
 				$this->db->delete('medications'); 			
 			}			
 		}
-
+		public function lastUpdatedBy($problemId){
+			$this->db->select('user.login,person.familyName');
+			$this->db->from('user');
+			$this->db->join('person','user.personId=person.personId','left');
+			$this->db->join('problems','problems.lastUpdatedBy=user.personId','left');
+			$this->db->where('problems.problemId', $problemId);
+			$query = $this->db->get();
+			$result=$query->result();
+			return $result;
+		}
 		public function getProblemDetails($id) {
 			$this->db->select('person.personId,birthDate,givenName,familyName,avatarFilename,problems.conceptId,activeStatus,startDate,endDate,controlStatus,lastUpdate,notes,term,problems.problemId');
 			$this->db->join('sct2_description', 'problems.conceptId = sct2_description.conceptId','left');

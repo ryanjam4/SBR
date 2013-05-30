@@ -79,7 +79,7 @@
 
 
 	<div class="form-actions">
-	    <button type="button" class="btn btn-primary addMedication_btn" personId="<?php echo $personId;?>" problemId="<?php echo $problemId;?>">Submit</button>
+	    <button type="button" class="btn btn-primary addMedication_btn" personId="<?php echo $personId;?>" problemId="<?php echo $problemId;?>" <?php if($medicationId!=''){?>medicationId="<?php echo $medicationId;?>" <?php }?>>Submit</button>
 	</div> 
 
 

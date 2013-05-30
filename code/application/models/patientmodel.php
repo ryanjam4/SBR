@@ -173,7 +173,7 @@
 			$this->db->select('person.personId,coverImage,birthDate,givenName,familyName,needToKnow,likeToKnow,avatarFilename,term,controlStatus,problems.problemId,isApproved');
 			$this->db->from('person')->join('personnarrative', 'person.personId = personnarrative.personId', 'left');
 			$this->db->join('problems','person.personId = problems.personId and problems.activeStatus = 1 and problems.isApproved = 1', 'left');
-			$this->db->join('sct2_description','problems.conceptId = sct2_description.conceptId and sct2_description.typeId like "%1"', 'left');
+			$this->db->join('sct2_description','problems.conceptId = sct2_description.conceptId and sct2_description.typeId like "%1" and sct2_description.active=1', 'left');
       	$this->db->where('person.personId',$userId);
 			$this->db->order_by("controlStatus", "desc"); 
 			$query = $this->db->get();
@@ -184,7 +184,7 @@
 
       public function getUnApprovedProblems($userId) {
          $this->db->select('term,controlStatus,problems.problemId,isApproved,problems.personId');
-         $this->db->from('problems')->join('sct2_description','problems.conceptId = sct2_description.conceptId and sct2_description.typeId like "%1"', 'left');
+         $this->db->from('problems')->join('sct2_description','problems.conceptId = sct2_description.conceptId and sct2_description.typeId like "%1" and sct2_description.active=1', 'left');
          $this->db->where('problems.personId',$userId)->where('problems.isApproved','0');
          $this->db->order_by("controlStatus", "desc"); 
          $query = $this->db->get();
@@ -206,11 +206,38 @@
 
          $this->db->query($query, $data); 
       }
+	  
+	   public function saveeditPersonNarrative($data){
+		   //check whether the patient has already narrative or not.
+		   	$this->db->where('personId', $data['personId']);
+			$this->db->from('personnarrative');
+			$cnt=$this->db->count_all_results();
+			if($cnt>0){
+				$data1 = array(
+				   "needToKnow" => trim(preg_replace('/\s+/', ' ', $data['needToKnow'])),
+					"likeToKnow" => trim(preg_replace('/\s+/', ' ', $data['likeToKnow']))
+				);
+
+				$this->db->where('personId', $data['personId']);
+				$this->db->update('personnarrative', $data1);
+			}else{
+				 $data = array(
+					'personId' => $data['personId'],
+					"needToKnow" => trim(preg_replace('/\s+/', ' ', $data['needToKnow'])),
+					"likeToKnow" => trim(preg_replace('/\s+/', ' ', $data['likeToKnow']))
+				 );
+
+				 $query = "INSERT INTO personnarrative (`id`, `personId`, `needToKnow`,`likeToKnow`) VALUES ('',?,?,?) ON DUPLICATE KEY UPDATE needToKnow=?,likeToKnow=?";
+				 $this->db->query($query, $data);
+			}
+      }
 
       public function savePatientImage($data){
-         $this->db->set('coverimage', trim(preg_replace('/\s+/', ' ', $data['patient_image_file_path'])));         
-         $this->db->where('personId', $data['personId']);
-         $this->db->update('person'); 
+		  if(trim($data['patient_image_file_path'])!=''){
+			 $this->db->set('coverimage', trim(preg_replace('/\s+/', ' ', $data['patient_image_file_path'])));
+			 $this->db->where('personId', $data['personId']);
+			 $this->db->update('person');
+	  		}
       }
 	}
 ?>

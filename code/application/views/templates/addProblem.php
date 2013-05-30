@@ -2,8 +2,11 @@
 <link href="<?php echo base_url('assets/css/jquery-ui.css') ?>" rel="stylesheet">
 <form class="form-horizontal form-addProblem" action="<?php echo base_url('admin/updateUser');?>" method="POST">
 <input class="input-xlarge" id="problemId" type="hidden" name="problem[problemId]" value="<?php echo (($problemId != '')?$problemDetails->getProblemId():''); ?>" />
+<?php if($problemId != ''){?>
+<input type="hidden" id="lastupdatedby" name="problem[lastupdatedby]" value="<?php echo $this->UserSession->getLoggedInUserID()?>"/>
+<?php }?>
 <div class="problem_section">	
-	<div class="control-group">
+	<!--<div class="control-group">
 	     <label class="control-label">Search Problem</label>
 	     <div class="controls">
 	        <input class="input-xlarge" type="text" data-divId=".matched_terms" data-destId="#conceptId" placeholder="Please enter the search here" name="term" id="matched_terms_input" value="" />
@@ -13,12 +16,12 @@
 	        <div class="help-block">
 	        </div>
 	     </div>
-	</div>
+	</div>-->
 
 	<div class="control-group">
 	     <label class="control-label">Concept Id</label>
 	     <div class="controls">
-	        <input class="input-xlarge" id="conceptId" type="text" name="problem[conceptId]" value="<?php echo (($problemId != '')?$problemDetails->getConceptId():''); ?>" />
+	        <input name="problem[conceptId]" type="text" class="input-xlarge" id="conceptId" value="<?php echo (($problemId != '')?$problemDetails->getConceptId():''); ?>" <?php if($problemId != ''){?>readonly="readonly"<?php }?> />
 	        <span><?php echo (($problemId != '')?$problemDetails->getConceptObject()->getTerm():''); ?></span>
 	        <div class="help-block">
 	        </div>
@@ -41,7 +44,9 @@
 	        </div>
 	     </div>
 	</div>
-
+	<?php
+	if($problemId != '' && $problemDetails->getActiveStatus()!='1'){
+	?>
 	<div class="control-group">
 	     <label class="control-label">End Date</label>
 	     <div class="controls">
@@ -50,6 +55,16 @@
 	        </div>
 	     </div>
 	</div>
+    <?php }else{?>
+    <div class="control-group">
+	     <label class="control-label">End Date</label>
+	     <div class="controls">
+	        <input class="input-xlarge" type="text" id="endDate"  name="problem[endDate]" value="<?php echo (($problemId != '')?$problemDetails->getEndDate():''); ?>" />
+	        <div class="help-block">
+	        </div>
+	     </div>
+	</div>
+    <? }?>
 
 	<div class="control-group">
 		 <label class="checkbox">
@@ -65,9 +80,18 @@
 </div>
 
 	
-	<iframe src="http://www.snomedbrowser.com/" width="100%" height="500"></iframe>
+	<!--<iframe src="http://www.snomedbrowser.com/" width="100%" height="500"></iframe>-->
 
 </form>
+<br clear="all" />
+<?php if($problemId != ''){
+	$a=$problemDetails->lastUpdatedBy($problemId);
+	if($a){
+	?>
+<div><b><u>Last Edited by</u></b></div>
+<div><div style="float:left;margin-right:10px;">User Name </div><div style="float:left">Family Name</div></div><br clear="all" />
+<div><div style="float:left;margin-right:10px;"><?php echo $a[0]->login;?></div><div style="float:left"><?php echo $a[0]->familyName;?></div></div>
+<?php }}?>
 
 <script type="text/javascript">
 	$(document).ready(function(){

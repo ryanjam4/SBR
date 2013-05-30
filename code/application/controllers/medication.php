@@ -33,7 +33,8 @@
    		function edit() {     
    			$viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();
 	        $viewObject['personId'] = $this->uri->segment(3);
-	        $viewObject['medicationId'] = $this->uri->segment(4);	        
+	        $viewObject['medicationId'] = $this->uri->segment(4);
+			$viewObject['problemId'] = $this->uri->segment(5);
 	        $viewObject['medicationDetails'] = $this->medication->getMedicationDetails($viewObject['medicationId']);
 	        $viewObject['medicationDetails'] = $viewObject['medicationDetails'][0];
 	        $this->load->view('include/header',$viewObject);

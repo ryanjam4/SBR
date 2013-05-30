@@ -4,6 +4,10 @@
 <?php if($permissionObject->checkUserPermission($personRole,'add_medication')): ?>
 	<a href="<?php echo base_url("medication/add/".$problemDetails->getPersonObject()->getPersonId()."/".$problemDetails->getProblemId());?>" >Add Medication</a>
 <?php endif; ?>
+<?php //added by athenaesolutions
+	if($permissionObject->checkUserPermission($personRole,'delete_problem')) : ?>
+    <a href="#" class="delete_problem" data-problemid="<?php echo $problemDetails->getProblemId(); ?>" >Delete</a>
+    <?php endif; //end?>
 <div class="clearFloat"></div>
 <br>
 <a href="<?php echo base_url('patient/index/'.$problemDetails->getPersonObject()->getPersonId()); ?>"  ><img width="50" height="50" src="<?= $problemDetails->getPersonObject()->getAvatarFilename();?>" /></a>
@@ -51,11 +55,9 @@ foreach ($problemGoals as $key=>$value): ?>
 	<div class="<?php echo (($value->getActiveStatus() == 1) ? 'green':'red'); ?>">
 		<a href="<?php echo base_url('medication/detail/'.$value->getMedicationId()); ?>"><?php echo $value->getConceptObject()->getTerm();?></a>
 		<?php if($permissionObject->checkUserPermission($personRole,'update_medication')): ?>
-			<a href="<?php echo base_url('medication/edit/'.$problemDetails->getPersonObject()->getPersonId()."/".$value->getMedicationId()); ?>">  -  Edit</a>
+			<a href="<?php echo base_url('medication/edit/'.$problemDetails->getPersonObject()->getPersonId()."/".$value->getMedicationId()."/".$problemDetails->getProblemId()); ?>">  -  Edit</a>
 		<?php endif; ?>
-		<?php if($permissionObject->checkUserPermission($personRole,'delete_medication')): ?>		
 			<a href="#" class="delete_medication" data-medicationId="<?php echo $value->getMedicationId();?>" >  - Delete</a>
-		<?php endif; ?>
 	</div>
 	<?php endforeach; ?>  	
 </div>
@@ -67,11 +69,9 @@ foreach ($problemGoals as $key=>$value): ?>
 	<div class="<?php echo (($value->getActiveStatus() == 1) ? 'green':'red'); ?>">	
 		<a href="<?php echo base_url('medication/detail/'.$value->getMedicationId()); ?>"><?php echo $value->getConceptObject()->getTerm();?></a>
 		<?php if($permissionObject->checkUserPermission($personRole,'update_medication')): ?>
-			<a href="<?php echo base_url('medication/edit/'.$problemDetails->getPersonObject()->getPersonId()."/".$value->getMedicationId()); ?>">  -  Edit</a>
-		<?php endif; ?>
-		<?php if($permissionObject->checkUserPermission($personRole,'delete_medication')): ?>		
+			<a href="<?php echo base_url('medication/edit/'.$problemDetails->getPersonObject()->getPersonId()."/".$value->getMedicationId()."/".$problemDetails->getProblemId()); ?>">  -  Edit</a>
+		<?php endif; ?>	
 			<a href="#" class="delete_medication" data-medicationId="<?php echo $value->getMedicationId();?>" >  - Delete</a>
-		<?php endif; ?>
 		<?php 
 			if($personRole == 1) {
 				echo '<a href="#" class="approve_medication" data-medicationid="'.$value->getMedicationId().'" >  - Aprrove</a>';

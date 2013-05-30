@@ -109,9 +109,10 @@ var AppMainObj = "";
         });
 
         $(".addMedication_btn").on('click',function(){
-            AppMainObj.makeAjaxRequest(basePath+'/medication/saveMedication/',{personId:$(this).attr('personid'),problemId:$(this).attr('problemId'),form_data:$(".form-addProblem").serialize()},'json',
+			var problemid=$(this).attr('problemid');
+            AppMainObj.makeAjaxRequest(basePath+'/medication/saveMedication/',{personId:$(this).attr('personid'),medicationId:$(this).attr('medicationid'),problemId:$(this).attr('problemid'),form_data:$(".form-addProblem").serialize()},'json',
                 function(data){
-                    location.href=basePath+"/problem/detail/"+data.problemId;                    
+                    location.href=basePath+"/problem/detail/"+problemid;
               });
             return false;
         });
@@ -157,6 +158,13 @@ var AppMainObj = "";
 
         $(".save_narrative").on('click',function(){            
             AppMainObj.makeAjaxRequest(basePath+'/patient/savePatientData/',{likeToKnow:$("#likeToKnow").val(),needToKnow:$("#needToKnow").val(),personId:$("#patient_id").val()},'json',
+                function(data){
+                    location.reload();
+              });
+            return false;
+        });
+		$('.saveeditpatient').on('click',function(){
+            AppMainObj.makeAjaxRequest(basePath+'/patient/editData/',{likeToKnow:$("#likeToKnow").val(),needToKnow:$("#needToKnow").val(),personId:$("#patient_id").val(),'patient_image_file_path':$('#patient_image_file_path').val()},'json',
                 function(data){
                     location.reload();
               });

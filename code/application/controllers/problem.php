@@ -15,8 +15,8 @@
         $this->load->model('permission');
    	}
 
-    function add() {     
-        $this->viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();
+    function add() {
+		$this->viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();
         $this->viewObject['personId'] = end($this->uri->segments);
         $this->viewObject['problemId'] = "";
         $this->load->view('include/header',$this->viewObject);
