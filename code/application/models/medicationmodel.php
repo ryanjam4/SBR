@@ -378,6 +378,7 @@
 			$this->db->join('sct2_description', 'medications.conceptId = sct2_description.conceptId','left');
 			$this->db->join('problemmedications', 'problemmedications.medicationId = medications.medicationId','left');
 			$this->db->where('problemmedications.problemId',$id)->where('isApproved',$isApproved);
+			$this->db->where('sct2_description.active',1);
 			$query = $this->db->get('medications');
 			$result = $query->result();
 			return $this->parseDbObjects($result);

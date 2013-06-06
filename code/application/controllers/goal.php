@@ -6,6 +6,7 @@
 	  	$this->load->model('GoalModel','goal');
 	  	$this->load->model('UserSession');
         $this->load->model('ProblemModel','problem');
+        $this->load->model('permission');
 	}
 
 	function add(){
@@ -38,6 +39,8 @@
 	}
 
 	function detail(){
+		$this->viewObject['permissionObject'] = $this->permission;
+		$this->viewObject['personsubrole'] = $this->permission->getSubRoleID();//added by athena esolutions
 		$this->viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();   
         $this->viewObject['personRole'] = $this->UserSession->getLoggedInUserRole();   
         $goalId = end($this->uri->segments);                
@@ -49,7 +52,6 @@
         }else{
         	$this->viewObject['back'] = base_url()."/patient/index";
         }
-
         $this->viewObject['goalDetails'] = $this->goal;
 		$this->load->view('include/header',$this->viewObject);
         $this->load->view('templates/goalDetail',$this->viewObject);

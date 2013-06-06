@@ -8,28 +8,45 @@
             $this->load->model('permission');
    	    }
 
- 		function index() {     
+ 		function index($patientid="") {     
             $this->load->model('fbmodel'); 
             $this->load->model('GoalModel','goal');
-            $query_string = explode("/",uri_string());	
-            if(isset($query_string['2'])) {
-              $viewObject['personId'] = $query_string['2'];              
-            }else{
-              $viewObject['personId'] = $this->UserSession->getLoggedInUserID();
-            } 
+			if($patientid=="") {
+				$query_string = explode("/",uri_string());	
+				if(isset($query_string['2'])) {
+				  $viewObject['personId'] = $query_string['2'];              
+				}else{
+				  $viewObject['personId'] = $this->UserSession->getLoggedInUserID();
+				} 
 
-            $viewObject['permissionObject'] = $this->permission;
-            
-
-            $viewObject['personRole'] = $this->UserSession->getLoggedInUserRole();
-            $patientDetails = $this->patient->getPatientDetails($viewObject['personId']);     
-            $unApprovedProblems = $this->patient->getUnApprovedProblems($viewObject['personId']);     
-            $viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();
-            $viewObject['patientDetails'] = $patientDetails;
-            $viewObject['unApprovedProblems'] = $unApprovedProblems;
-            $viewObject['facebookLoginUrl'] = $this->fbmodel->getFbLoginUrl($viewObject['personId']);
-            $viewObject['facebookData'] = $this->fbmodel->fetchUserFacebookData($viewObject['personId']);
-            $viewObject['personGoals'] = $this->goal->getPersonGoals($viewObject['personId']); 
+				$viewObject['permissionObject'] = $this->permission;
+				
+				$viewObject['personsubrole'] = $this->permission->getSubRoleID();//added by athena esolutions
+				$viewObject['personRole'] = $this->UserSession->getLoggedInUserRole();
+				$patientDetails = $this->patient->getPatientDetails($viewObject['personId']);     
+				$unApprovedProblems = $this->patient->getUnApprovedProblems($viewObject['personId']);     
+				$viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();
+				$viewObject['patientDetails'] = $patientDetails;
+				$viewObject['unApprovedProblems'] = $unApprovedProblems;
+				$viewObject['facebookLoginUrl'] = $this->fbmodel->getFbLoginUrl($viewObject['personId']);
+				$viewObject['facebookData'] = $this->fbmodel->fetchUserFacebookData($viewObject['personId']);
+				$viewObject['personGoals'] = $this->goal->getPersonGoals($viewObject['personId']);
+			}
+			else {
+				$viewObject['personId'] = $patientid;
+				$viewObject['permissionObject'] = $this->permission;
+				
+				$viewObject['personsubrole'] = $this->permission->getSubRoleID();//added by athena esolutions
+				$viewObject['personRole'] = $this->UserSession->getLoggedInUserRole();
+				$patientDetails = $this->patient->getPatientDetails($patientid);     
+				$unApprovedProblems = $this->patient->getUnApprovedProblems($patientid);     
+				$viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();
+				$viewObject['patientDetails'] = $patientDetails;
+				$viewObject['unApprovedProblems'] = $unApprovedProblems;
+				$viewObject['facebookLoginUrl'] = $this->fbmodel->getFbLoginUrl($patientid);
+				$viewObject['facebookData'] = $this->fbmodel->fetchUserFacebookData($patientid);
+				$viewObject['personGoals'] = $this->goal->getPersonGoals($patientid); 
+			}
             $this->load->view('include/header',$viewObject);
             $this->load->view('templates/patientView',$viewObject);
             $this->load->view('include/footer');     
@@ -58,8 +75,8 @@
 
             echo json_encode(array('status'=>'success'));
         }
-		function edit(){
-			 $this->load->model('fbmodel');
+		function edit($patientid){
+/*			 $this->load->model('fbmodel');
             $this->load->model('GoalModel','goal');
             $query_string = explode("/",uri_string());
             if(isset($query_string['2'])) {
@@ -79,17 +96,35 @@
             $viewObject['unApprovedProblems'] = $unApprovedProblems;
             $viewObject['facebookLoginUrl'] = $this->fbmodel->getFbLoginUrl($viewObject['personId']);
             $viewObject['facebookData'] = $this->fbmodel->fetchUserFacebookData($viewObject['personId']);
-            $viewObject['personGoals'] = $this->goal->getPersonGoals($viewObject['personId']);
+            $viewObject['personGoals'] = $this->goal->getPersonGoals($viewObject['personId']);*/
+			$this->load->model('fbmodel');
+            $this->load->model('GoalModel','goal');
+             $viewObject['personId'] = $patientid;
+
+            $viewObject['permissionObject'] = $this->permission;
+
+
+            $viewObject['personRole'] = $this->UserSession->getLoggedInUserRole();
+            $patientDetails = $this->patient->getPatientDetails($patientid);
+            $unApprovedProblems = $this->patient->getUnApprovedProblems($patientid);
+            $viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();
+            $viewObject['patientDetails'] = $patientDetails;
+            $viewObject['unApprovedProblems'] = $unApprovedProblems;
+            $viewObject['facebookLoginUrl'] = $this->fbmodel->getFbLoginUrl($patientid);
+            $viewObject['facebookData'] = $this->fbmodel->fetchUserFacebookData($patientid);
+            $viewObject['personGoals'] = $this->goal->getPersonGoals($patientid);
 		    $this->load->view('include/header',$viewObject);
             $this->load->view('templates/edit',$viewObject);
             $this->load->view('include/footer');
 		}
-		function aboutme(){
+		function aboutme($patientid){
 			$this->load->model('fbmodel');
-            $viewObject['personId'] = $this->UserSession->getLoggedInUserID();
+            $viewObject['personId'] = $patientid/*$this->UserSession->getLoggedInUserID()*/;
             $viewObject['loggedInUserRole'] = $this->UserSession->getLoggedInUserRole();
-            $viewObject['facebookLoginUrl'] = $this->fbmodel->getFbLoginUrl($viewObject['personId']);
-            $viewObject['facebookData'] = $this->fbmodel->fetchUserFacebookData($viewObject['personId']);
+            $viewObject['facebookLoginUrl'] = $this->fbmodel->getFbLoginUrl($patientid);
+            $viewObject['facebookData'] = $this->fbmodel->fetchUserFacebookData($patientid);
+			$patientDetails = $this->patient->getPatientDetails($patientid); 
+			$viewObject['patientDetails'] = $patientDetails;
             $this->load->view('include/header',$viewObject);
             $this->load->view('templates/aboutme',$viewObject);
             $this->load->view('include/footer');

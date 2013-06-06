@@ -386,12 +386,12 @@
 				$this->db->delete('medications'); 			
 			}			
 		}
-		public function lastUpdatedBy($problemId){
+		public function lastUpdatedBy(){
 			$this->db->select('user.login,person.familyName');
 			$this->db->from('user');
 			$this->db->join('person','user.personId=person.personId','left');
 			$this->db->join('problems','problems.lastUpdatedBy=user.personId','left');
-			$this->db->where('problems.problemId', $problemId);
+			$this->db->where('problems.problemId', $this->problemId);
 			$query = $this->db->get();
 			$result=$query->result();
 			return $result;
