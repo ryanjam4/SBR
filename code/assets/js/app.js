@@ -71,6 +71,10 @@ var AppMainObj = "";
             $(".patientCheckBox").off('click').on('click',function(){ 
                 $(".form-registration .patientPasswords").removeClass('hidden');
             });
+            $(".providerCheckBox").off('click').on('click',function(){ 
+                $(".form-registration .patientPasswords").addClass('hidden');
+            });
+
 
             $(".roleCheckBox").off('click').on('click',function(){ 
                 $(".form-registration .patientPasswords").addClass('hidden');

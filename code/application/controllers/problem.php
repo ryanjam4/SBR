@@ -8,7 +8,7 @@
         $this->load->model('ProblemModel','problem');
         $this->load->model('medicationModel','medication');
         $this->load->model('GoalModel','goal');
-        if($this->UserSession->getLoggedInUserRole() == '1') {
+        if($this->UserSession->getLoggedInUserRole() == '1' ||$this->UserSession->getLoggedInUserRole() == '4' ) {
             $this->problem->setIsApproved('1');
         }
         $this->viewObject = array();

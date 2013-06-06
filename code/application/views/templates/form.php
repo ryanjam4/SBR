@@ -5,22 +5,31 @@
 
       <div class="control-group">
          <label class="control-label">User Role</label>
-         <br>
+        &nbsp; &nbsp; &nbsp;
          <?php if($loggedInUserRole == 1): ?>
          <label class="radio inline">
           <input type="radio" name="role" class="roleCheckBox"  value="1" checked>
             Health Care specialist(Admin)
         </label>
+		<?php endif; ?>
+
+         <?php if($loggedInUserRole == 1 || $loggedInUserRole == 4): ?>
         <label class="radio inline">
           <input type="radio" name="role" class="roleCheckBox"  value="3" >
             Limited access user
         </label>
-        <?php endif; ?>       
-        
+        <?php endif; ?>
+
         <label class="radio inline">
           <input type="radio" name="role" class="patientCheckBox"  value="2" >
             Patient
         </label>
+         <?php if($loggedInUserRole != 4): ?>
+         <label class="radio inline">
+          <input type="radio" name="role" class="providerCheckBox"  value="4" >
+            Provider
+        </label>
+		<?php endif; ?>
         <br>
       </div>
       <div class="control-group">
@@ -86,12 +95,12 @@
       <div class="control-group">
          <span class="btn btn-success fileinput-button">
               <i class="icon-plus icon-white"></i>
-              <span>Upload Pic</span>              
+              <span>Upload Pic</span>
               <input type="hidden" name="avatarFilename" id="avatar_filename" value="" />
          </span>
          <input type="file" id="avatar" class="avatar" name="avatar"/>
          <span class="upload_status"></span>
-      </div>   
+      </div>
       <div class="control-group">
          <label class="control-label">DOB</label>
          <div class="controls">
@@ -132,7 +141,7 @@
             <div class="help-block">
             </div>
          </div>
-         
+
       </div>
    <div class="control-group">
       <label class="control-label">Sex</label>
@@ -144,7 +153,7 @@
           <input type="radio" name="sex"  value="Female" checked>
             Female
         </label>
-   </div>   
+   </div>
    <div class="control-group">
          <label class="control-label">Phone Number</label>
          <div class="controls">

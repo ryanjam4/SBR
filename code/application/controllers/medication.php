@@ -5,7 +5,7 @@
 		  	parent::__construct();  	
 	        $this->load->model('UserSession');
 	        $this->load->model('medicationModel','medication');
-	        if($this->UserSession->getLoggedInUserRole() == '1') {
+	        if($this->UserSession->getLoggedInUserRole() == '1' || $this->UserSession->getLoggedInUserRole() == '4') {
          	   $this->medication->setIsApproved('1');
         	}
    		}

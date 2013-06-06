@@ -360,9 +360,23 @@ class user extends CI_Model{
 							
 
 		public function saveUser() {
+			// storing data in person table
+			$data = array();
+		    $data['personId'] = $this->personId;
+		    $data['givenName'] = $this->givenName;
+		    $data['middleName'] = $this->middleName;
+		    $data['familyName'] = $this->familyName;
+		    $data['birthDate'] = $this->birthDate;
+		    $data['avatarFilename'] = $this->avatarFilename;
+		    $data['sex'] = $this->sex;
+			$this->db->insert('person',$data); 
+			
+
+			$personId = $this->db->insert_id();
+			
 			// storing data in user table
 		    $data = array();
-		    $data['personId'] = $this->personId;
+		    $data['personId'] = $personId;
 		    $data['login'] = $this->login;
 		    $data['password'] = $this->password;
 		    $data['role'] = $this->role;
@@ -370,19 +384,40 @@ class user extends CI_Model{
 		    $data['OVPassword'] = $this->OVPassword;
 			$this->db->insert('user',$data);  
 
-			$personId = $this->db->insert_id();
-
-			// storing data in person table
-			$data = array();
-		    $data['personId'] = $personId;
-		    $data['givenName'] = $this->givenName;
-		    $data['middleName'] = $this->middleName;
-		    $data['familyName'] = $this->familyName;
-		    $data['birthDate'] = $this->birthDate;
-		    $data['avatarFilename'] = $this->avatarFilename;
-		    $data['sex'] = $this->sex;
-			$this->db->insert('person',$data);  
-
+			
+			
+			// FOr provider registeration
+			$roleId		=	$this->role;
+			$providerCategory = '';
+			if($roleId=='4'){
+				$result = $this->db->select('term')->from('sct2_description')->where('id',309343006)->get()->result();
+			if(isset($result[0]->term)){
+				$providerCategory = $result[0]->term;
+			}
+				$data					=	array();
+				$data['personId']		=	$personId;
+				$data['conceptId']		=	309343006;
+				$data['credentials']	=	$providerCategory;
+				$this->db->insert('providers',$data);
+				
+			}
+			//If Login user is provider
+			$this->load->model('UserSession');
+			$loginUserRoleId	=	$this->UserSession->getLoggedInUserRole();
+			$loginPersonId		=	$this->UserSession->getLoggedInUserID();
+			
+			$result = $this->db->select('providerId')->from('providers')->where('personId',$loginPersonId)->get()->result();
+			if(isset($result[0]->providerId)){
+				$providerId = $result[0]->providerId;
+			}
+			if($loginUserRoleId=='4' && $roleId=='2'){
+				$data = array();
+				$data['personId'] 			= $personId;
+				$data['personModifiedBy'] 	= $loginPersonId;
+				$data['providerId'] 		= $providerId;
+				$this->db->insert('healthcareteam',$data);
+				
+			}
 			//storing data in  email table
 			
 			$result = $this->db->select('emailId')->from('email')->where('emailAddress',$this->emailAddress)->get()->result();
@@ -505,8 +540,10 @@ class user extends CI_Model{
 		}
 
 		public function deleteUser($inputList) {
-			$this->db->delete('user', array('personId' => $inputList['user_id'])); 
 			$this->db->delete('person', array('personId' => $inputList['user_id'])); 
+			$this->db->delete('user', array('personId' => $inputList['user_id'])); 
+			$this->db->delete('providers', array('personId' => $inputList['user_id'])); 
+			$this->db->delete('personaddress', array('personId' => $inputList['user_id'])); 
 		}
 
 		public function updateUser($input) {
@@ -577,6 +614,65 @@ class user extends CI_Model{
 			}
 			return $userObj;
 		}
+		
+		public function listProvidersUsers($pageNo,$sortBy,$sortOrder) {
+			$personalIdArr	= array();
+			$providerId		=	$this->UserSession->getLoggedInUserID();
+		  	$providersUsers	=	$this->selectProvidersUsers($providerId);
+			$totalCnt		=	count($providersUsers);
+			foreach($providersUsers as $key=>$val){
+				$personalIdArr[]	=	$providersUsers[$key]['personId'];
+			}
+			$limit = $this->config->item('userPageLimit');
+			$offset = (($pageNo-1)*$limit);
+			$this->db->select('person.personId,givenName,familyName,middleName,birthDate,login,areaCode,exchangeCode,localNumber,sex')->limit(30,0);
+			
+			
+				$this->db->join('user','person.personId=user.personId and user.role != 1','left');
+				
+			
+			$this->db->join('personphone', 'person.personId = personphone.personId','left');
+			$this->db->join('phone','phone.phoneId=personphone.phoneId','left');
+			
+			$this->db->where('user.personId',$providerId);
+			if(!empty($personalIdArr)){
+				$this->db->or_where_in('user.personId',$personalIdArr);
+			}
+			$this->db->order_by($sortBy, $sortOrder);
+			$this->db->limit($limit, $offset);
+			$query = $this->db->get('person');
+			$userList = array();
+			foreach ($query->result() as $key => $value) {
+				$userObj = new user();
+				foreach ($value as $row => $result) {
+					$userObj->$row = $result;	
+				}
+				$userList[] = $userObj;
+				
+			}	
+		
+			
+			$responseObject = array('userList'=>$userList,'totalCnt'=>$totalCnt); 
+			return $responseObject;
+		}
+		
+		public function selectProvidersUsers($loginPersonId) {
+			$result = $this->db->select('providerId')->from('providers')->where('personId',$loginPersonId)->get()->result();
+			if(isset($result[0]->providerId)){
+				$providerId = $result[0]->providerId;
+			}
+			$recordArr		=	array();
+			$this->db->select('personId');
+			$this->db->where('providerId',$providerId);
+			$query	= $this->db->get('healthcareteam');
+			$result	= $query->result();
+			foreach ($result as $key){
+				$data= array('personId'=>$key->personId);
+				array_push($recordArr,$data);
+			}
+			return $recordArr;
+		}
+
 
 		
 }

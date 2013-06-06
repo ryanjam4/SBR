@@ -7,7 +7,7 @@
       <input class="input-xlarge" type="hidden" name="personId" value="<?php echo $user_details->getPersonId(); ?>" />
       <div class="control-group">
          <label class="control-label">User Role</label>
-         <br>
+         &nbsp; &nbsp; &nbsp;
         <?php if($loggedInUserRole == 1): ?> 
          <label class="radio inline">
           <input type="radio" name="role" class="roleCheckBox"  value="1" <?= ($user_details->getRole()==1)?'checked':"";?>>
@@ -16,6 +16,21 @@
         <label class="radio inline">
           <input type="radio" name="role" class="roleCheckBox"  value="3" <?= ($user_details->getRole()==3)?'checked':"";?>>
             Limited access user
+        </label>
+        <label class="radio inline">
+          <input type="radio" name="role" class="providerCheckBox"  value="4" <?= ($user_details->getRole()==4)?'checked':"";?>>
+            Provider
+        </label>
+        <?php endif; ?>         
+        
+        <?php if($loggedInUserRole == 4): ?>
+          <label class="radio inline">
+          <input type="radio" name="role" class="roleCheckBox"  value="3" <?= ($user_details->getRole()==3)?'checked':"";?>>
+            Limited access user
+        </label>
+         <label class="radio inline">
+          <input type="radio" name="role" class="providerCheckBox"  value="4" <?= ($user_details->getRole()==4)?'checked':"";?>>
+            Provider
         </label>
         <?php endif; ?>         
         <label class="radio inline">

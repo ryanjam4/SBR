@@ -33,7 +33,11 @@ class Account extends CI_Controller {
 				}else{
 					$responseObject['redirectUrl'] = "/patient/";
 				}				
-			}else{
+			}
+                       else if($userObj->getRole() == 4){
+				$responseObject['redirectUrl'] = "/provider/listUsers";
+			}
+                       else{
 				$responseObject['redirectUrl'] = "/demographic/listUsers";
 			}
 			
@@ -47,9 +51,12 @@ class Account extends CI_Controller {
 	public function createNewUser() {
 		$this->user->populateClassMembers($_POST);
 		$personId = $this->user->saveUser();
+                $userRoleId=$this->UserSession->getLoggedInUserRole();  
 		
 		if(!empty($_POST['redirectTo'])){
 			header("Location: ".$_POST['redirectTo']);
+               	}else if($userRoleId==4){
+			header("Location: ".base_url()."provider/listUsers");	
 		}else{
 			header("Location: ".base_url()."admin/listUsers");	
 		}
